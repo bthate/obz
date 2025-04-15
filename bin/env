@@ -1,0 +1,55 @@
+#!/usr/bin/env python3
+# This file is placed in the Public Domain.
+
+
+"environment"
+
+
+import os
+import sys
+import time
+
+
+IGNORES = []
+NAME   = 'obz'
+
+
+def banner():
+    tme = time.ctime(time.time()).replace("  ", " ")
+    print(f"{NAME.upper()} since {tme}")
+
+
+def ignoring(txt):
+    for ign in IGNORES:
+        if ign in txt:
+            return True
+    return False
+
+
+def popen(txt):
+    for line in os.popen(txt).readlines():
+        if ignoring(line):
+            continue
+        print(line.rstrip())
+        sys.stdout.flush()
+
+
+def main():
+    banner()
+    print("\nclean")
+    popen("bin/clean -f")
+    print("\nbuild\n")
+    popen('python3 setup.py sdist')
+    print("\ntwine\n")
+    popen('twine check dist/*')
+    print("\nmaking env\n")
+    popen("python3 -mvirtualenv env")
+    print("\ninstalling\n")
+    popen(f"env/bin/pip3 install {NAME} -f dist -f tars --upgrade --force")
+    print("\nfinal\n")
+    popen("env/bin/obz cmd")
+    print("\ndone")
+
+
+if __name__ == "__main__":
+    main()
