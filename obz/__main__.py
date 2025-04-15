@@ -4,34 +4,20 @@
 "main program"
 
 
-import hashlib
 import os
 import pathlib
-import signal
 import sys
 import time
-import types
 import _thread
 
 
-sys.path.insert(0, os.getcwd())
-
-
-from .client  import Client
-from .error   import Errors
-from .event   import Event
-from .modules import Commands, Main, command, load, mods, modules, parse, scan
-from .object  import dumps
-from .thread  import launch
-from .utils   import nodebug, spl
-from .workdir import Workdir, pidname
-
-
-p = os.path.join
-
-
-def output(txt):
-    print(txt)
+from obx.json    import dumps
+from obx.store   import Workdir, pidname
+from obr.client  import Client
+from obr.event   import Event
+from obr.errors  import Errors, full
+from obz.modules import Commands, Main, command, inits, md5sum
+from obz.modules import mods, modules, parse, scan, settable
 
 
 class CLI(Client):
@@ -47,7 +33,7 @@ class CLI(Client):
 class Console(CLI):
 
     def announce(self, txt):
-        output(txt)
+        pass
 
     def callback(self, evt):
         CLI.callback(self, evt)
@@ -63,18 +49,34 @@ class Console(CLI):
 "output"
 
 
+def doprint(txt):
+    print(txt.rstrip())
+    sys.stdout.flush()
+
+
+def output(txt):
+    doprint(txt)
+
+
 def nil(txt):
     pass
 
 
 def enable():
     global output
-    output = print
+    output = doprint
 
 
 def disable():
     global output
     output = nil
+
+
+"signals"
+
+
+def handler(signum, frame):
+    _thread.interrupt_main()
 
 
 "utilities"
@@ -90,8 +92,8 @@ def check(txt):
     for arg in args:
         if not arg.startswith("-"):
             continue
-        for c in txt:
-            if c in arg:
+        for char in txt:
+            if char in arg:
                 return True
     return False
 
@@ -116,6 +118,12 @@ def daemon(verbose=False):
     os.nice(10)
 
 
+def errors():
+    for exc in Errors.errors:
+        for line in full(exc):
+            output(line)
+
+
 def forever():
     while True:
         try:
@@ -124,29 +132,9 @@ def forever():
             _thread.interrupt_main()
 
 
-def inits(names) -> [types.ModuleType]:
-    mods = []
-    for name in spl(names):
-        mod = load(name)
-        if not mod:
-            continue
-        if "init" in dir(mod):
-            thr = launch(mod.init)
-        mods.append((mod, thr))
-    return mods
-
-
-def md5sum(mod):
-    with open(mod.__file__, "r", encoding="utf-8") as file:
-        txt = file.read().encode("utf-8")
-        return str(hashlib.md5(txt).hexdigest())
-
-
-def modnames(path) -> [str]:
-    return [
-            x[:-3] for x in os.listdir(path)
-            if x.endswith(".py") and not x.startswith("__")
-           ]
+def nodebug():
+    with open('/dev/null', 'a+', encoding="utf-8") as ses:
+        os.dup2(ses.fileno(), sys.stderr.fileno())
 
 
 def pidfile(filename):
@@ -172,11 +160,42 @@ def setwd(name, path=""):
     Workdir.wdr = path
 
 
-"handlers"
+"commands"
 
 
-def handler(signum, frame):
-    _thread.interrupt_main()
+def cmd(event):
+    event.reply(",".join(sorted([x for x in Commands.names if x not in Main.ignore])))
+
+
+def md5(event):
+    table = mods("tbl")[0]
+    event.reply(md5sum(table.__file__))
+
+
+def srv(event):
+    import getpass
+    name = getpass.getuser()
+    event.reply(TXT % (Main.name.upper(), name, name, name, Main.name))
+
+
+def tbl(event):
+    if not check("f"):
+        Commands.names = {}
+    for mod in mods(empty=True):
+        scan(mod)
+    event.reply("# This file is placed in the Public Domain.")
+    event.reply("")
+    event.reply("")
+    event.reply('"lookup tables"')
+    event.reply("")
+    event.reply("")
+    event.reply(f"NAMES = {dumps(Commands.names, indent=4, sort_keys=True)}")
+    event.reply("")
+    event.reply("")
+    event.reply("MD5 = {")
+    for mod in mods():
+        event.reply(f'    "{mod.__name__.split(".")[-1]}": "{md5sum(mod.__file__)}",')
+    event.reply("}")
 
 
 "scripts"
@@ -188,6 +207,7 @@ def background():
     privileges()
     disable()
     pidfile(pidname(Main.name))
+    settable()
     Commands.add(cmd)
     inits(Main.init or "irc,rss")
     forever()
@@ -197,6 +217,7 @@ def console():
     import readline # noqa: F401
     setwd(Main.name)
     enable()
+    settable()
     Commands.add(cmd)
     parse(Main, " ".join(sys.argv[1:]))
     Main.init = Main.sets.init or Main.init
@@ -215,7 +236,7 @@ def control():
     if len(sys.argv) == 1:
         return
     setwd(Main.name)
-    Workdir.wdr = os.path.expanduser(f"~/.{Main.name}")
+    settable()
     enable()
     Commands.add(cmd)
     Commands.add(md5)
@@ -232,9 +253,11 @@ def control():
 
 
 def service():
-    signal.signal(signal.SIGHUP, handler)
-    nodebug()
     setwd(Main.name)
+    settable()
+    nodebug()
+    enable()
+    banner()
     privileges()
     pidfile(pidname(Main.name))
     Commands.add(cmd)
@@ -242,41 +265,49 @@ def service():
     forever()
 
 
-"commands"
+
+"runtime"
 
 
-def cmd(event):
-    event.reply(",".join(sorted([x for x in Commands.names if x not in Main.ignore])))
+def wrapped(func):
+    try:
+        func()
+    except (KeyboardInterrupt, EOFError):
+        output("")
+    errors()
 
 
-def md5(event):
-    table = mods("tbl")[0]
-    event.reply(md5sum(table))
+def wrap(func):
+    import termios
+    old = None
+    try:
+        old = termios.tcgetattr(sys.stdin.fileno())
+    except termios.error:
+        pass
+    try:
+        wrapped(func)
+    finally:
+        if old:
+            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
 
 
-def srv(event):
-    import getpass
-    name = getpass.getuser()
-    event.reply(TXT % (Main.name.upper(), name, name, name, Main.name))
-
-
-def tbl(event):
-    import obz.modules
-    for mod in mods():
-        scan(mod)
-    event.reply("# This file is placed in the Public Domain.")
-    event.reply("")
-    event.reply("")
-    event.reply('"lookup tables"')
-    event.reply("")
-    event.reply("")
-    event.reply(f"NAMES = {dumps(Commands.names, indent=4, sort_keys=True)}")
-    event.reply("")
-    event.reply("")
-    event.reply("MD5 = {")
-    for mod in mods():
-        event.reply(f'    "{mod.__name__.split(".")[-1]}": "{md5sum(mod)}",')
-    event.reply("}")
+def main():
+    if check("a"):
+        Main.ignore = "udp"
+        Main.init   = ",".join(modules())
+        for mod in mods():
+            mod.DEBUG = False
+    if check("v"):
+        setattr(Main.opts, "v", True)
+        enable()
+    if check("c"):
+        wrap(console)
+    elif check("d"):
+        background()
+    elif check("s"):
+        wrapped(service)
+    else:
+        wrapped(control)
 
 
 "data"
@@ -296,49 +327,7 @@ ExecStart=/home/%s/.local/bin/%s -s
 WantedBy=multi-user.target"""
 
 
-"runtime"
-
-
-def wrapped(func):
-    try:
-        func()
-    except (KeyboardInterrupt, EOFError):
-        output("")
-    for exc in Errors.errors:
-        print(Errors.format(exc))
-
-
-def wrap(func):
-    import termios
-    old = None
-    try:
-        old = termios.tcgetattr(sys.stdin.fileno())
-    except termios.error:
-        pass
-    try:
-        wrapped(func)
-    finally:
-        if old:
-            termios.tcsetattr(sys.stdin.fileno(), termios.TCSADRAIN, old)
-
-
-def main():
-    if check("a"):
-        Main.ignore = ""
-        Main.init   = ",".join(modules())
-        for mod in mods():
-            mod.DEBUG = False
-    if check("v"):
-        setattr(Main.opts, "v", True)
-        enable()
-    if check("c"):
-        wrap(console)
-    elif check("d"):
-        background()
-    elif check("s"):
-        wrapped(service)
-    else:
-        wrapped(control)
+"main"
 
 
 if __name__ == "__main__":
