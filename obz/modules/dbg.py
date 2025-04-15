@@ -7,8 +7,7 @@
 import time
 
 
-from obr.errors import line
-from obr.fleet  import Fleet
+from obr import Fleet, line
 
 
 def dbg(event):
@@ -18,11 +17,11 @@ def dbg(event):
 
 def brk(event):
     event.reply("borking")
-    for bot in Fleet.bots.values():
-        if "sock" in dir(bot):
-            event.reply(f"shutdown on {bot.cfg.server}")
+    for clt in Fleet.all():
+        if "sock" in dir(clt):
+            event.reply(f"shutdown on {clt.cfg.server}")
             time.sleep(2.0)
             try:
-                bot.sock.shutdown(2)
+                clt.sock.shutdown(2)
             except OSError as ex:
                 event.reply(line(ex))

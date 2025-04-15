@@ -7,10 +7,8 @@
 import time
 
 
-from obx.disk   import write
-from obx.object import Object
-from obx.store  import find, fntime, ident, store
-from .          import elapsed
+from obx import Object, find, fntime, ident, store, write
+from .   import elapsed
 
 
 class Todo(Object):

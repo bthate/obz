@@ -12,7 +12,7 @@ import _thread
 
 
 from obx.json    import dumps
-from obx.store   import Workdir, pidname
+from obx.path    import Workdir, pidname
 from obr.client  import Client
 from obr.event   import Event
 from obr.errors  import Errors, full

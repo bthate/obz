@@ -19,13 +19,9 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from obx.disk   import write
-from obx.object import Object, update
-from obx.store  import find, fntime, ident, last, store
-from obr.thread import Repeater, launch
-
-
-from . import Fleet, elapsed, fmt, spl
+from obx import Object, find, fntime, ident, last, store, update, write
+from obr import Repeater, launch
+from .   import Fleet, elapsed, fmt, spl
 
 
 DEBUG = False
@@ -125,7 +121,7 @@ class Fetcher(Object):
             txt = f'[{feedname}] '
         for obj in result:
             txt2 = txt + self.display(obj)
-            for bot in Fleet.bots.values():
+            for bot in Fleet.clients.values():
                 bot.announce(txt2)
         return counter
 

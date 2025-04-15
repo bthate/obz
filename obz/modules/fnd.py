@@ -7,8 +7,8 @@
 import time
 
 
-from obx.store import find, fntime, long, skel, types
-from .         import elapsed, fmt
+from obx import find, fntime, long, skel, types
+from .   import elapsed, fmt
 
 
 def fnd(event):

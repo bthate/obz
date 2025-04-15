@@ -7,10 +7,8 @@
 import time
 
 
-from obr.thread import STARTTIME
-
-
-from . import elapsed
+from obr import STARTTIME
+from .   import elapsed
 
 
 def upt(event):

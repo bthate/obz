@@ -9,13 +9,9 @@ import re
 import time
 
 
-from obx.disk   import write
-from obx.store  import find, ident, store
-from obr.client import Fleet
-from obr.thread import Timer, launch
-
-
-from . import debug, elapsed
+from obx import find, ident, store, write
+from obr import Fleet, Timer, launch
+from .   import debug, elapsed
 
 
 def init():

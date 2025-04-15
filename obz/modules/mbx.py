@@ -9,13 +9,9 @@ import os
 import time
 
 
-from obx.disk   import write
-from obx.object import Object, keys, update
-from obx.store  import find, ident, store
-
-
-from .tmr       import extract_date
-from .          import elapsed, fmt
+from obx  import Object, find, ident, keys, store, update, write
+from .tmr import extract_date
+from .    import elapsed, fmt
 
 
 class Email(Object):

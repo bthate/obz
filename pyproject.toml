@@ -9,7 +9,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "obz"
 description = "OBZ"
-version = "10"
+version = "110"
 authors = [
     {name = "Bart Thate",email = "bthate@dds.nl"},
 ]

@@ -14,17 +14,10 @@ import threading
 import time
 
 
-from obx.disk   import write
-from obx.object import Object, keys
-from obx.store  import ident, last, store
-from obr.client import Client
-from obr.event  import Event
-from obr.fleet  import Fleet
-from obr.thread import launch
-
-
-from . import debug as ldebug
-from . import Default, Main, command, edit, fmt
+from obx import Object, ident, keys, last, store, write
+from obr import Client, Event, Fleet, launch
+from .   import debug as ldebug
+from .   import Default, Main, command, edit, fmt
 
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]
