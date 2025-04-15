@@ -1,44 +1,48 @@
+OBX
+===
+
+
 **NAME**
 
 
-``OBX`` - objects
+``OBZ`` - object shell
 
 
 **SYNOPSIS**
 
 
 |
-| ``obx <cmd> [key=val] [key==val]``
-| ``obx -cviw``
-| ``obx -d`` 
-| ``obx -s``
+| ``obz <cmd> [key=val] [key==val]``
+| ``obz -cviw``
+| ``obz -d`` 
+| ``obz -s``
 |
 
 **DESCRIPTION**
 
 
-``OBX`` has all you need to program a unix cli program, such as disk
+``OBZ`` has all you need to program a unix cli program, such as disk
 perisistence for configuration files, event handler to handle the
 client/server connection, deferred exception handling to not crash
 on an error, etc.
 
-``OBX`` contains all the python3 code to program objects in a functional
+``OBZ`` contains all the python3 code to program objects in a functional
 way. It provides a base Object class that has only dunder methods, all
 methods are factored out into functions with the objects as the first
 argument. It is called Object Programming (OP), OOP without the
 oriented.
 
-``OBX`` allows for easy json save//load to/from disk of objects. It
+``OBZ`` allows for easy json save//load to/from disk of objects. It
 provides an "clean namespace" Object class that only has dunder
 methods, so the namespace is not cluttered with method names. This
 makes storing and reading to/from json possible.
 
-``OBX`` is a demo bot, it can connect to IRC, fetch and display RSS
+``OBZ`` is a demo bot, it can connect to IRC, fetch and display RSS
 feeds, take todo notes, keep a shopping list and log text. You can
 also copy/paste the service file and run it under systemd for 24/7
 presence in a IRC channel.
 
-``OBX`` is Public Domain.
+``OBZ`` is Public Domain.
 
 
 **INSTALL**
@@ -47,33 +51,33 @@ presence in a IRC channel.
 installation is done with pipx
 
 |
-| ``$ pipx install obx``
+| ``$ pipx install obz``
 | ``$ pipx ensurepath``
 |
 | <new terminal>
 |
-| ``$ obx srv > obx.service``
-| ``$ sudo mv obx.service /etc/systemd/system/``
-| ``$ sudo systemctl enable obx --now``
+| ``$ obz srv > obz.service``
+| ``$ sudo mv obz.service /etc/systemd/system/``
+| ``$ sudo systemctl enable obz --now``
 |
-| joins ``#obx`` on localhost
+| joins ``#obz`` on localhost
 |
 
 
 **USAGE**
 
 
-use ``obx`` to control the program, default it does nothing
+use ``obz`` to control the program, default it does nothing
 
 |
-| ``$ obx``
+| ``$ obz``
 | ``$``
 |
 
 see list of commands
 
 |
-| ``$ obx cmd``
+| ``$ obz cmd``
 | ``cfg,cmd,dne,dpl,err,exp,imp,log,mod,mre,nme,``
 | ``now,pwd,rem,req,res,rss,srv,syn,tdo,thr,upt``
 |
@@ -81,14 +85,14 @@ see list of commands
 start daemon
 
 |
-| ``$ obxd``
+| ``$ obzd``
 | ``$``
 |
 
 start service
 
 |
-| ``$ obxs``
+| ``$ obzs``
 | ``<runs until ctrl-c>``
 |
 
@@ -125,41 +129,41 @@ here is a list of available commands
 irc
 
 |
-| ``$ obx cfg server=<server>``
-| ``$ obx cfg channel=<channel>``
-| ``$ obx cfg nick=<nick>``
+| ``$ obz cfg server=<server>``
+| ``$ obz cfg channel=<channel>``
+| ``$ obz cfg nick=<nick>``
 |
 
 sasl
 
 |
-| ``$ obx pwd <nsvnick> <nspass>``
-| ``$ obx cfg password=<frompwd>``
+| ``$ obz pwd <nsvnick> <nspass>``
+| ``$ obz cfg password=<frompwd>``
 |
 
 rss
 
 |
-| ``$ obx rss <url>``
-| ``$ obx dpl <url> <item1,item2>``
-| ``$ obx rem <url>``
-| ``$ obx nme <url> <name>``
+| ``$ obz rss <url>``
+| ``$ obz dpl <url> <item1,item2>``
+| ``$ obz rem <url>``
+| ``$ obz nme <url> <name>``
 |
 
 opml
 
 |
-| ``$ obx exp``
-| ``$ obx imp <filename>``
+| ``$ obz exp``
+| ``$ obz imp <filename>``
 |
 
 
 **FILES**
 
 |
-| ``~/.obx``
-| ``~/.local/bin/obx``
-| ``~/.local/pipx/venvs/obx/*``
+| ``~/.obz``
+| ``~/.local/bin/obz``
+| ``~/.local/pipx/venvs/obz/*``
 |
 
 **AUTHOR**
@@ -171,5 +175,5 @@ opml
 **COPYRIGHT**
 
 |
-| ``OBX`` is Public Domain.
+| ``OBZ`` is Public Domain.
 |
