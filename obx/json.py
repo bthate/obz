@@ -65,9 +65,6 @@ def loads(*args, **kw) -> Object:
     return json.loads(*args, **kw)
 
 
-"interface"
-
-
 def __dir__():
     return (
         'dump',
