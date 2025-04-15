@@ -7,14 +7,18 @@ build-backend = "setuptools.build_meta"
 
 
 [project]
-name = "obx"
-description = "OBX"
-version = "50"
+name = "obz"
+description = "OBZ"
+version = "10"
 authors = [
     {name = "Bart Thate",email = "bthate@dds.nl"},
 ]
 readme = "README.rst"
 license = {text="Public Domain"}
+dependencies = [
+    'obr',
+    'obx'
+]
 classifiers = [ 
     'Development Status :: 1 - Planning',
     'License :: Public Domain',
@@ -25,7 +29,7 @@ classifiers = [
 
 
 [project.scripts]
-"obx" = "obx.__main__:main"
+"obz" = "obz.__main__:main"
 
 [project.urls]
 "home" = "https://pypi.org/project/obx"
@@ -35,6 +39,6 @@ classifiers = [
 
 [tool.setuptools]
 packages = [
-    "obx",
-    "obx.modules"
+    "obz",
+    "obz.modules"
 ]
