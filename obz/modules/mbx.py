@@ -9,9 +9,12 @@ import os
 import time
 
 
-from obx  import Object, find, ident, keys, store, update, write
-from .tmr import extract_date
-from .    import elapsed, fmt
+from obx      import Object, keys, update, write
+from obx.find import find
+
+
+from .tmr     import extract_date
+from .        import elapsed, fmt
 
 
 class Email(Object):
@@ -110,7 +113,7 @@ def mbx(event):
             if payload.get_content_type() == 'text/plain':
                 obj.text += payload.get_payload()
         obj.text = obj.text.replace("\\n", "\n")
-        write(obj, store(ident(obj)))
+        write(obj)
         nrs += 1
     if nrs:
         event.reply("ok %s" % nrs)

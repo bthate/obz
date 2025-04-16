@@ -16,8 +16,7 @@ import types
 import _thread
 
 
-from obx.object import Object as Object
-from obx.object import items, keys
+from obx.object import Object, items, keys
 from obr.errors import later
 from obr.fleet  import Fleet
 from obr.thread import launch
@@ -29,8 +28,6 @@ MD5      = {}
 NAMES    = {}
 
 
-lock     = threading.RLock()
-initlock = threading.RLock()
 loadlock = threading.RLock()
 
 
@@ -392,9 +389,3 @@ def fmt(obj, args=None, skip=None, plain=False) -> str:
             txt += f'{key}={value} '
     return txt.strip()
 
-
-"interface"
-
-
-def __dir__():
-    return modules()

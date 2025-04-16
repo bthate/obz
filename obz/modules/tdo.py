@@ -7,8 +7,9 @@
 import time
 
 
-from obx import Object, find, fntime, ident, store, write
-from .   import elapsed
+from obx      import Object, write
+from obx.find import find, fntime
+from .        import elapsed
 
 
 class Todo(Object):
@@ -46,5 +47,5 @@ def tdo(event):
         return
     obj = Todo()
     obj.txt = event.rest
-    write(obj, store(ident(obj)))
+    write(obj)
     event.done()

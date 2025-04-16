@@ -16,8 +16,10 @@ from obx.path    import Workdir, pidname
 from obr.client  import Client
 from obr.event   import Event
 from obr.errors  import Errors, full
-from obz.modules import Commands, Main, command, inits, md5sum
-from obz.modules import mods, modules, parse, scan, settable
+
+
+from .modules import Commands, Main, command, inits, md5sum
+from .modules import mods, modules, parse, scan, settable
 
 
 class CLI(Client):

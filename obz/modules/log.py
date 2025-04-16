@@ -7,8 +7,9 @@
 import time
 
 
-from obx import Object, find, fntime, ident, store, write
-from .   import elapsed
+from obx      import Object, write
+from obx.find import find, fntime
+from .        import elapsed
 
 
 class Log(Object):
@@ -30,5 +31,5 @@ def log(event):
         return
     obj = Log()
     obj.txt = event.rest
-    write(obj, store(ident(obj)))
+    write(obj)
     event.done()

@@ -19,9 +19,11 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import quote_plus, urlencode
 
 
-from obx import Object, find, fntime, ident, last, store, update, write
-from obr import Repeater, launch
-from .   import Fleet, elapsed, fmt, spl
+from obx      import Object, update, write
+from obx.find import find, fntime, last
+from obx.path import path
+from obr      import Repeater, launch
+from .        import Fleet, elapsed, fmt, spl
 
 
 DEBUG = False
@@ -107,11 +109,11 @@ class Fetcher(Object):
                 if uurl in seen:
                     continue
                 if self.dosave:
-                    write(fed, store(ident(fed)))
+                    write(fed)
                 result.append(fed)
             setattr(self.seen, feed.rss, urls)
             if not self.seenfn:
-                self.seenfn = store(ident(self.seen))
+                self.seenfn = path(self.seen)
             write(self.seen, self.seenfn)
         if silent:
             return counter
@@ -333,7 +335,7 @@ def rss(event):
             return
     feed = Rss()
     feed.rss = event.args[0]
-    write(feed, store(ident(feed)))
+    write(feed)
     event.done()
 
 
@@ -477,7 +479,7 @@ def imp(event):
             update(feed, obj)
             feed.rss = obj.xmlUrl
             feed.insertid = insertid
-            write(feed, store(ident(feed)))
+            write(feed)
             nrs += 1
     if nrskip:
         event.reply(f"skipped {nrskip} urls.")

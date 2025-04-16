@@ -13,7 +13,7 @@ import threading
 
 from .json   import dump, load
 from .object import update
-from .path   import store
+from .path   import path
 
 
 lock = threading.RLock()
@@ -37,10 +37,6 @@ def fqn(obj) -> str:
     return kin
 
 
-def getpath(obj):
-    return p(store(ident(obj)))
-
-
 def ident(obj) -> str:
     return p(fqn(obj),*str(datetime.datetime.now()).split())
 
@@ -58,7 +54,7 @@ def read(obj, pth) -> str:
 def write(obj, pth=None) -> str:
     with lock:
         if pth is None:
-            pth = store(ident(obj))
+            pth = path(obj)
         cdir(pth)
         with open(pth, "w", encoding="utf-8") as fpt:
             dump(obj, fpt, indent=4)

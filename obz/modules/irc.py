@@ -14,10 +14,13 @@ import threading
 import time
 
 
-from obx import Object, ident, keys, last, store, write
-from obr import Client, Event, Fleet, launch
-from .   import debug as ldebug
-from .   import Default, Main, command, edit, fmt
+from obx      import Object, ident, keys
+from obx.disk import write
+from obx.find import last
+from obx.path import path, store 
+from obr      import Client, Event, Fleet, launch
+from .        import debug as ldebug
+from .        import Default, Main, command, edit, fmt
 
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]
@@ -606,7 +609,7 @@ def cfg(event):
                    )
     else:
         edit(config, event.sets)
-        write(config, fnm or store(ident(config)))
+        write(config, fnm or path(config))
         event.done()
 
 
