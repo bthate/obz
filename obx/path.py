@@ -12,7 +12,7 @@ import pathlib
 p = os.path.join
 
 
-from .object import fqn, ident
+from .object import fqn
 
 
 class Workdir:

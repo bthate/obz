@@ -5,10 +5,9 @@
 
 
 from .disk   import write
-from .object import Object, construct, items, keys, values, update
-from .object import fqn, ident
-from .path   import path
 from .json   import dumps, loads
+from .object import Object, construct, fqn, items, keys, values, update
+from .path   import ident, path
 
 
 __all__ = (
