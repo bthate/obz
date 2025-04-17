@@ -12,10 +12,10 @@ import time
 from http.server import HTTPServer, BaseHTTPRequestHandler
 
 
-from obx      import Object
-from obx.path import Workdir, types
-from obr      import launch, later
-from .        import Default, debug
+from obx.object import Object
+from obx.store  import Workdir, types
+from obr.thread import launch, later
+from .          import Default, debug
 
 
 DEBUG = False

@@ -4,7 +4,7 @@
 "errors"
 
 
-from obr import Errors, line
+from obr.thread import Errors, line
 
 
 def err(event):

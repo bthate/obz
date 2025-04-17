@@ -8,9 +8,11 @@ import datetime
 import time
 
 
-from obx import Object, construct, keys
-from obr import Event, Fleet, Repeater
-from .   import debug, elapsed
+from obx.object  import Object, construct, keys
+from obr.client  import Fleet
+from obr.handler import Event
+from obr.thread  import Repeater
+from .           import debug, elapsed
 
 
 DAY = 24*60*60

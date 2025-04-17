@@ -14,13 +14,13 @@ import threading
 import time
 
 
-from obx      import Object, ident, keys
-from obx.disk import write
-from obx.find import last
-from obx.path import path, store 
-from obr      import Client, Event, Fleet, launch
-from .        import debug as ldebug
-from .        import Default, Main, command, edit, fmt
+from obx.object  import Object, keys
+from obx.store   import ident, last, path, store, write 
+from obr.client  import Client, Fleet
+#from obr.handler import Event
+from obr.thread  import launch
+from .           import debug as ldebug
+from .           import Default, Main, command, edit, fmt
 
 
 IGNORE  = ["PING", "PONG", "PRIVMSG"]
@@ -39,7 +39,7 @@ def debug(txt):
 def init():
     irc = IRC()
     irc.start()
-    irc.events.ready.wait()
+    irc.events.joined.wait(30.0)
     debug(f'irc at {Config.server}:{Config.port} {Config.channel}')
     return irc
 

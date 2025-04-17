@@ -6,16 +6,18 @@
 
 import os
 import pathlib
+import signal
 import sys
+import threading
 import time
 import _thread
 
 
 from obx.json    import dumps
-from obx.path    import Workdir, pidname
+from obx.store   import Workdir, pidname
 from obr.client  import Client
-from obr.event   import Event
-from obr.errors  import Errors, full
+from obr.handler import Event
+from obr.thread  import Errors, full, launch
 
 
 from .modules import Commands, Main, command, inits, md5sum
@@ -228,7 +230,8 @@ def console():
         banner()
     for _mod, thr in inits(Main.init):
         if "w" in Main.opts:
-            thr.join()
+            if thr.is_alive():
+                thr.join(120.0)
     csl = Console()
     csl.start()
     forever()
@@ -265,8 +268,6 @@ def service():
     Commands.add(cmd)
     inits(Main.init or "irc,rss")
     forever()
-
-
 
 "runtime"
 

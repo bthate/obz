@@ -17,9 +17,8 @@ import _thread
 
 
 from obx.object import Object, items, keys
-from obr.errors import later
-from obr.fleet  import Fleet
-from obr.thread import launch
+from obr.client import Fleet
+from obr.thread import later, launch
 
 
 CHECKSUM = "7b3aa07511d3d882d07a62bd8c3b6239"
@@ -98,7 +97,7 @@ def debug(*args):
 
 def inits(names) -> [types.ModuleType]:
     modz = []
-    for name in spl(names):
+    for name in sorted(spl(names)):
         try:
             mod = load(name)
             if not mod:

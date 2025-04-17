@@ -4,8 +4,9 @@
 "fleet"
 
 
-from obr import Fleet, name
-from .   import fmt
+from obr.client import Fleet
+from obr.thread import name
+from .          import fmt
 
 
 def flt(event):

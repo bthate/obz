@@ -7,9 +7,9 @@
 import time
 
 
-from obx      import Object, write
-from obx.find import find, fntime
-from .        import elapsed
+from obx.object import Object
+from obx.store  import find, fntime,  write
+from .          import elapsed
 
 
 class Log(Object):
