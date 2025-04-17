@@ -17,7 +17,7 @@ import time
 from obx.object  import Object, keys
 from obx.store   import ident, last, path, store, write 
 from obr.client  import Client, Fleet
-#from obr.handler import Event
+from obr.handler import Event
 from obr.thread  import launch
 from .           import debug as ldebug
 from .           import Default, Main, command, edit, fmt
